@@ -4,7 +4,7 @@ namespace PromoCat\Rackspace\Identity;
 
 use GuzzleHttp\ClientInterface;
 use OpenStack\Identity\v2\Service as OpenStackService;
-use PromoCat\Identity\Api;
+use PromoCat\Rackspace\Identity\Api;
 
 class Service extends OpenStackService
 {

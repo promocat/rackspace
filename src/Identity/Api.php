@@ -1,6 +1,6 @@
 <?php
 
-namespace PromoCat\Identity;
+namespace PromoCat\Rackspace\Identity;
 
 use OpenStack\Identity\v2\Api as OpenStackApi;
 
