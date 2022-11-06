@@ -4,9 +4,11 @@ namespace PromoCat\Rackspace;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Middleware as GuzzleMiddleware;
+use InvalidArgumentException;
 use OpenStack\Common\Service\Builder;
 use OpenStack\Common\Transport\HandlerStack;
 use OpenStack\Common\Transport\Utils;
+use OpenStack\ObjectStore\v1\Service as ObjectStoreService;
 use OpenStack\OpenStack;
 use PromoCat\Rackspace\Identity\Service;
 
@@ -30,7 +32,7 @@ class Rackspace extends OpenStack
     private function getDefaultIdentityService(array $options): Service
     {
         if (!isset($options['authUrl'])) {
-            throw new \InvalidArgumentException("'authUrl' is a required option");
+            throw new InvalidArgumentException("'authUrl' is a required option");
         }
 
         $stack = HandlerStack::create();
@@ -50,5 +52,15 @@ class Rackspace extends OpenStack
         }
 
         return Service::factory(new Client($clientOptions));
+    }
+
+    /**
+     * Creates a new Object Store v1 service.
+     *
+     * @param array $options options that will be used in configuring the service
+     */
+    public function objectStoreV1(array $options = []): ObjectStoreService
+    {
+        return parent::objectStoreV1($options + ['catalogName' => 'cloudFiles', 'catalogType' => 'object-store']);
     }
 }
