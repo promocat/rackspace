@@ -1,0 +1,28 @@
+{
+  "name": "promocat/rackspace",
+  "description": "Rackspace adapter for php-opencloud/openstack",
+  "keywords": [
+    "php",
+    "rackspace",
+    "openstack",
+    "api",
+    "sdk"
+  ],
+  "homepage": "Rackspace adapter for php-opencloud/openstack",
+  "authors": [
+    {
+      "name": "Brandon Tilstra",
+      "email": "brandontilstra@promocat.nl"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "PromoCat\\Rackspace\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.0",
+    "guzzlehttp/guzzle": "^7.0",
+    "php-opencloud/openstack": "^3.2"
+  }
+}
