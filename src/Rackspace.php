@@ -65,13 +65,22 @@ class Rackspace extends OpenStack
      * Creates a new Object Store v1 service.
      *
      * @param array $options options that will be used in configuring the service
+     * @param array $cdnOptions options that will be used in configuring the cdn service
      *
      * @throws \Exception
      */
-    public function objectStoreV1(array $options = []): ObjectStoreService
+    public function objectStoreV1(array $options = [], array $cdnOptions = []): ObjectStoreService
     {
-        $defaults = ['catalogName' => 'cloudFiles', 'catalogType' => 'object-store'];
+        $cdnService = $this->builder->createService('ObjectStore\\v1\\CDN', array_merge([
+            'catalogName' => 'cloudFilesCDN',
+            'catalogType' => 'rax:object-cdn',
+        ], $cdnOptions));
 
-        return $this->builder->createService('ObjectStore\\v1', array_merge($defaults, $options));
+        $objectStoreService = $this->builder->createService('ObjectStore\\v1', array_merge([
+            'catalogName' => 'cloudFiles',
+            'catalogType' => 'object-store',
+        ], $options));
+
+        return $objectStoreService->setCdnService($cdnService);
     }
 }
