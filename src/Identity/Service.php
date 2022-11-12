@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PromoCat\Rackspace\Identity;
 
 use GuzzleHttp\ClientInterface;

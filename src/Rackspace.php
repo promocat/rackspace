@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PromoCat\Rackspace;
 
 use GuzzleHttp\Client;
@@ -8,23 +10,28 @@ use InvalidArgumentException;
 use OpenStack\Common\Service\Builder;
 use OpenStack\Common\Transport\HandlerStack;
 use OpenStack\Common\Transport\Utils;
-use OpenStack\ObjectStore\v1\Service as ObjectStoreService;
 use OpenStack\OpenStack;
 use PromoCat\Rackspace\Identity\Service;
+use PromoCat\Rackspace\ObjectStore\v1\Service as ObjectStoreService;
 
 class Rackspace extends OpenStack
 {
     const US_IDENTITY_ENDPOINT = 'https://identity.api.rackspacecloud.com/v2.0/';
     const UK_IDENTITY_ENDPOINT = 'https://lon.identity.api.rackspacecloud.com/v2.0/';
 
+    private Builder $builder;
+
     public function __construct(array $options = [], Builder $builder = null)
     {
         if (!isset($options['authUrl'])) {
             $options['authUrl'] = self::US_IDENTITY_ENDPOINT;
         }
+
         if (!isset($options['identityService'])) {
             $options['identityService'] = $this->getDefaultIdentityService($options);
         }
+
+        $this->builder = $builder ?: new Builder($options, 'PromoCat\\Rackspace');
 
         parent::__construct($options, $builder);
     }
@@ -58,9 +65,13 @@ class Rackspace extends OpenStack
      * Creates a new Object Store v1 service.
      *
      * @param array $options options that will be used in configuring the service
+     *
+     * @throws \Exception
      */
     public function objectStoreV1(array $options = []): ObjectStoreService
     {
-        return parent::objectStoreV1($options + ['catalogName' => 'cloudFiles', 'catalogType' => 'object-store']);
+        $defaults = ['catalogName' => 'cloudFiles'];
+
+        return $this->builder->createService('ObjectStore\\v1', array_merge($defaults, $options));
     }
 }
