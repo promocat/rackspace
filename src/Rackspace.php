@@ -70,7 +70,7 @@ class Rackspace extends OpenStack
      */
     public function objectStoreV1(array $options = []): ObjectStoreService
     {
-        $defaults = ['catalogName' => 'cloudFiles'];
+        $defaults = ['catalogName' => 'cloudFiles', 'catalogType' => 'object-store'];
 
         return $this->builder->createService('ObjectStore\\v1', array_merge($defaults, $options));
     }
