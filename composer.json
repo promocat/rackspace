@@ -8,7 +8,7 @@
     "api",
     "sdk"
   ],
-  "homepage": "Rackspace adapter for php-opencloud/openstack",
+  "homepage": "https://github.com/promocat/rackspace",
   "authors": [
     {
       "name": "Brandon Tilstra",
