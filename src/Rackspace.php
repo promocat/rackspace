@@ -11,7 +11,7 @@ use OpenStack\Common\Service\Builder;
 use OpenStack\Common\Transport\HandlerStack;
 use OpenStack\Common\Transport\Utils;
 use OpenStack\OpenStack;
-use PromoCat\Rackspace\Identity\Service;
+use PromoCat\Rackspace\Identity\Service as IdentityService;
 use PromoCat\Rackspace\ObjectStore\v1\Service as ObjectStoreService;
 
 class Rackspace extends OpenStack
@@ -31,12 +31,12 @@ class Rackspace extends OpenStack
             $options['identityService'] = $this->getDefaultIdentityService($options);
         }
 
-        $this->builder = $builder ?: new Builder($options, 'PromoCat\\Rackspace');
+        $this->builder = $builder ?: new Builder($options, '\\PromoCat\\Rackspace');
 
         parent::__construct($options, $builder);
     }
 
-    private function getDefaultIdentityService(array $options): Service
+    private function getDefaultIdentityService(array $options): IdentityService
     {
         if (!isset($options['authUrl'])) {
             throw new InvalidArgumentException("'authUrl' is a required option");
@@ -58,7 +58,7 @@ class Rackspace extends OpenStack
             $clientOptions = array_merge($options['requestOptions'], $clientOptions);
         }
 
-        return Service::factory(new Client($clientOptions));
+        return IdentityService::factory(new Client($clientOptions));
     }
 
     /**
