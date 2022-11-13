@@ -7,6 +7,7 @@ namespace PromoCat\Rackspace\ObjectStore\v1;
 use OpenStack\Common\Resource\ResourceInterface;
 use PromoCat\Rackspace\ObjectStore\v1\CDN\Service as CDNService;
 use PromoCat\Rackspace\ObjectStore\v1\Models\Container;
+use PromoCat\Rackspace\ObjectStore\v1\Models\HasInitializedService;
 
 class Service extends \OpenStack\ObjectStore\v1\Service
 {
@@ -18,7 +19,12 @@ class Service extends \OpenStack\ObjectStore\v1\Service
             $class = Container::class;
         }
 
-        return parent::model($class, $data);
+        $model = parent::model($class, $data);
+        if ($model instanceof HasInitializedService) {
+            $model->setService($this);
+        }
+
+        return $model;
     }
 
     public function getCdnService(): CDNService

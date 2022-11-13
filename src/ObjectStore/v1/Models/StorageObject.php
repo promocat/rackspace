@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace PromoCat\Rackspace\ObjectStore\v1\Models;
 
-use GuzzleHttp\Psr7\Uri;
-use PromoCat\Rackspace\Constants\UrlType;
-
-class StorageObject extends \OpenStack\ObjectStore\v1\Models\StorageObject
+class StorageObject extends \OpenStack\ObjectStore\v1\Models\StorageObject implements HasInitializedService
 {
+    use InitializedServiceTrait;
+
     private Container $_container;
 
     public function newInstance(): self
     {
-        return parent::newInstance()->setContainer($this->_container);
+        return parent::newInstance()
+                     ->setContainer($this->_container)
+                     ->setService($this->getService());
     }
 
     public function setContainer(Container $container): self

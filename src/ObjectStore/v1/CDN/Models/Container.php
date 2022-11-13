@@ -2,60 +2,54 @@
 
 namespace PromoCat\Rackspace\ObjectStore\v1\CDN\Models;
 
-use OpenStack\Common\Resource\HasMetadata;
 use OpenStack\Common\Resource\Listable;
 use OpenStack\Common\Resource\OperatorResource;
-use OpenStack\ObjectStore\v1\Models\MetadataTrait;
+use OpenStack\Common\Resource\Retrievable;
 use PromoCat\Rackspace\ObjectStore\v1\CDN\Api;
+use PromoCat\Rackspace\ObjectStore\v1\Models\HasInitializedService;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * @property Api $api
  */
-class Container extends OperatorResource implements Listable, HasMetadata
+class Container extends OperatorResource implements Listable, Retrievable
 {
-    const METADATA_PREFIX = 'X-Cdn-';
+    public string $name;
 
-    use MetadataTrait;
+    public string $cdnSslUri;
 
-    /** @var string */
-    public $name;
+    public string $cdnUri;
 
-    /** @var int */
-    public $ttl;
+    public bool $cdnEnabled;
 
-    /** @var array */
-    public $metadata;
+    public int $ttl;
+
+    public bool $logRetention;
+
+    public array $metadata;
 
     protected $markerKey = 'name';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function populateFromResponse(ResponseInterface $response): self
+    protected $aliases = [
+        'cdn_ssl_uri' => 'cdnSslUri',
+        'cdn_uri' => 'cdnUri',
+        'cdn_enabled' => 'cdnEnabled',
+        'log_retention' => 'logRetention',
+    ];
+
+    public function getCdnSslUri(): string
     {
-        parent::populateFromResponse($response);
-
-        $this->ttl = $response->getHeaderLine('X-Ttl');
-        $this->metadata = $this->parseMetadata($response);
-
-        return $this;
+        return $this->cdnSslUri;
     }
 
-    /**
-     * @return null|string|int
-     */
-    public function getCdnSslUri()
+    public function getCdnUri(): string
     {
-        return $this->metadata['Ssl-Uri'];
+        return $this->cdnUri;
     }
 
-    /**
-     * @return null|string|int
-     */
-    public function getCdnUri()
+    public function isCdnEnabled(): bool
     {
-        return $this->metadata['Uri'];
+        return $this->cdnEnabled;
     }
 
     public function getTtl(): int
@@ -66,40 +60,20 @@ class Container extends OperatorResource implements Listable, HasMetadata
     /**
      * {@inheritdoc}
      */
-    public function mergeMetadata(array $metadata)
-    {
-        $response = $this->execute($this->api->postContainer(), ['name' => $this->name, 'metadata' => $metadata]);
-        $this->metadata = $this->parseMetadata($response);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function resetMetadata(array $metadata)
-    {
-        $options = [
-            'name' => $this->name,
-            'removeMetadata' => [],
-            'metadata' => $metadata,
-        ];
-
-        foreach ($this->getMetadata() as $key => $val) {
-            if (!array_key_exists($key, $metadata)) {
-                $options['removeMetadata'][$key] = 'True';
-            }
-        }
-
-        $response = $this->execute($this->api->postContainer(), $options);
-        $this->metadata = $this->parseMetadata($response);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMetadata(): array
+    public function retrieve()
     {
         $response = $this->executeWithState($this->api->headContainer());
+        $this->populateFromResponse($response);
+    }
 
-        return $this->parseMetadata($response);
+    public function populateFromResponse(ResponseInterface $response)
+    {
+        parent::populateFromResponse($response);
+
+        $this->cdnSslUri = $response->getHeaderLine('X-Cdn-Ssl-Uri');
+        $this->cdnUri = $response->getHeaderLine('X-Cdn-Uri');
+        $this->cdnEnabled = $response->getHeaderLine('X-Cdn-Enabled') === 'True';
+        $this->ttl = $response->getHeaderLine('X-Ttl');
+        $this->logRetention = $response->getHeaderLine('X-Log-Retention');
     }
 }
