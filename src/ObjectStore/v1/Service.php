@@ -9,6 +9,11 @@ use PromoCat\Rackspace\ObjectStore\v1\CDN\Service as CDNService;
 use PromoCat\Rackspace\ObjectStore\v1\Models\Container;
 use PromoCat\Rackspace\ObjectStore\v1\Models\HasInitializedService;
 
+/**
+ * @method Container getContainer(string $name = null)
+ * @method Container createContainer(array $data)
+ * @method \Generator|Container[] listContainers(array $options = [], callable $mapFn = null)
+ */
 class Service extends \OpenStack\ObjectStore\v1\Service
 {
     private CDNService $cdnService;

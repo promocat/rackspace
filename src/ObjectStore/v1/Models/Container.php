@@ -10,6 +10,9 @@ use PromoCat\Rackspace\ObjectStore\v1\CDN\Models\Container as CDNContainer;
 
 /**
  * @property Api $api
+ * @method StorageObject getObject(string $name)
+ * @method StorageObject createObject(array $data)
+ * @method \Generator|StorageObject[] listObjects(array $options = [], callable $mapFn = null)
  */
 class Container extends \OpenStack\ObjectStore\v1\Models\Container implements HasInitializedService
 {
