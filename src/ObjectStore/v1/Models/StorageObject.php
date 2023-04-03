@@ -29,11 +29,6 @@ class StorageObject extends \OpenStack\ObjectStore\v1\Models\StorageObject imple
         return $this->_container;
     }
 
-    public function getUrl(): string
-    {
-        return $this->getContainer()->getUrl($this->name);
-    }
-
     /**
      * @throws \Exception
      */
@@ -47,12 +42,12 @@ class StorageObject extends \OpenStack\ObjectStore\v1\Models\StorageObject imple
         $account = $this->getService()->getAccount();
         $account->retrieve();
         if (empty($account->tempUrl)) {
-            throw new Exceptions\ObjectError('Cannot produce temporary URL without an account secret.');
+            throw new \Exception('Cannot produce temporary URL without an account secret.');
         }
-        $urlPath = urldecode($this->getHttpBaseUrl()->getPath() . $this->getContainer()->name . '/' . $this->name);
-        $body = sprintf("%s\n%d\n%s", $method, $expiry, $urlPath);
+        $url = $this->getPublicUri();
+        $body = sprintf("%s\n%d\n%s", $method, $expiry, $url->getPath());
         $hash = hash_hmac('sha256', $body, $account->tempUrl);
 
-        return sprintf('%s?temp_url_sig=%s&temp_url_expires=%d', $this->getUrl(), $hash, $expiry);
+        return sprintf('%s?temp_url_sig=%s&temp_url_expires=%d', $url, $hash, $expiry);
     }
 }

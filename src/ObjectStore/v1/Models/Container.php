@@ -82,9 +82,4 @@ class Container extends \OpenStack\ObjectStore\v1\Models\Container implements Ha
         } catch (\Exception $e) {
         }
     }
-
-    public function getUrl(?string $path = null): string
-    {
-        return $this->getHttpBaseUrl() . $this->name . '/' . (string)$path;
-    }
 }
