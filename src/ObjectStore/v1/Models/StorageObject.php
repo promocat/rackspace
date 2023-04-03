@@ -34,7 +34,10 @@ class StorageObject extends \OpenStack\ObjectStore\v1\Models\StorageObject imple
         return $this->getContainer()->getUrl($this->name);
     }
 
-    public function getTemporaryUrl(int $expires, string $method = 'GET')
+    /**
+     * @throws \Exception
+     */
+    public function getTemporaryUrl(int $expires, string $method = 'GET'): string
     {
         $method = strtoupper($method);
         $expiry = time() + (int)$expires;
