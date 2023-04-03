@@ -17,9 +17,9 @@ class Container extends OperatorResource implements Listable, Retrievable
 {
     public string $name;
 
-    public string $cdnSslUri;
+    public string $cdnSslUrl;
 
-    public string $cdnUri;
+    public string $cdnUrl;
 
     public bool $cdnEnabled;
 
@@ -32,20 +32,20 @@ class Container extends OperatorResource implements Listable, Retrievable
     protected $markerKey = 'name';
 
     protected $aliases = [
-        'cdn_ssl_uri' => 'cdnSslUri',
-        'cdn_uri' => 'cdnUri',
+        'cdn_ssl_uri' => 'cdnSslUrl',
+        'cdn_uri' => 'cdnUrl',
         'cdn_enabled' => 'cdnEnabled',
         'log_retention' => 'logRetention',
     ];
 
     public function getCdnSslUri(): UriInterface
     {
-        return Utils::uriFor($this->cdnSslUri);
+        return Utils::uriFor($this->cdnSslUrl);
     }
 
     public function getCdnUri(): UriInterface
     {
-        return Utils::uriFor($this->cdnUri);
+        return Utils::uriFor($this->cdnUrl);
     }
 
     public function isCdnEnabled(): bool
@@ -71,8 +71,8 @@ class Container extends OperatorResource implements Listable, Retrievable
     {
         parent::populateFromResponse($response);
 
-        $this->cdnSslUri = $response->getHeaderLine('X-Cdn-Ssl-Uri');
-        $this->cdnUri = $response->getHeaderLine('X-Cdn-Uri');
+        $this->cdnSslUrl = $response->getHeaderLine('X-Cdn-Ssl-Uri');
+        $this->cdnUrl = $response->getHeaderLine('X-Cdn-Uri');
         $this->cdnEnabled = $response->getHeaderLine('X-Cdn-Enabled') === 'True';
         $this->ttl = $response->getHeaderLine('X-Ttl');
         $this->logRetention = $response->getHeaderLine('X-Log-Retention');
