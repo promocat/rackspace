@@ -2,12 +2,13 @@
 
 namespace PromoCat\Rackspace\ObjectStore\v1\CDN\Models;
 
+use GuzzleHttp\Psr7\Utils;
 use OpenStack\Common\Resource\Listable;
 use OpenStack\Common\Resource\OperatorResource;
 use OpenStack\Common\Resource\Retrievable;
 use PromoCat\Rackspace\ObjectStore\v1\CDN\Api;
-use PromoCat\Rackspace\ObjectStore\v1\Models\HasInitializedService;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * @property Api $api
@@ -37,14 +38,14 @@ class Container extends OperatorResource implements Listable, Retrievable
         'log_retention' => 'logRetention',
     ];
 
-    public function getCdnSslUri(): string
+    public function getCdnSslUri(): UriInterface
     {
-        return $this->cdnSslUri;
+        return Utils::uriFor($this->cdnSslUri);
     }
 
-    public function getCdnUri(): string
+    public function getCdnUri(): UriInterface
     {
-        return $this->cdnUri;
+        return Utils::uriFor($this->cdnUri);
     }
 
     public function isCdnEnabled(): bool

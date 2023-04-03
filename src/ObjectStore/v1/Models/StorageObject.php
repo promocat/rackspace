@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace PromoCat\Rackspace\ObjectStore\v1\Models;
 
+use OpenStack\Common\Transport\Utils;
+use PromoCat\Rackspace\Constants\UrlType;
+
 class StorageObject extends \OpenStack\ObjectStore\v1\Models\StorageObject implements HasInitializedService
 {
     use InitializedServiceTrait;
@@ -27,6 +30,22 @@ class StorageObject extends \OpenStack\ObjectStore\v1\Models\StorageObject imple
     public function getContainer(): Container
     {
         return $this->_container;
+    }
+
+    public function getCdnUrl(string $type = UrlType::SSL)
+    {
+        $cdn = $this->getContainer()->getCdn();
+        switch ($type) {
+            case UrlType::CDN:
+                $uri = $cdn->getCdnUri();
+                break;
+            case UrlType::SSL:
+            default:
+                $uri = $cdn->getCdnSslUri();
+                break;
+        }
+
+        return Utils::addPaths($uri, $this->name);
     }
 
     /**
