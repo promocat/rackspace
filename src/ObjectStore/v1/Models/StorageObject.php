@@ -33,7 +33,7 @@ class StorageObject extends \OpenStack\ObjectStore\v1\Models\StorageObject imple
         return $this->_container;
     }
 
-    public function getCdnUrl(string $type = UrlType::SSL): UriInterface
+    public function getCdnUri(string $type = UrlType::SSL): UriInterface
     {
         $cdn = $this->getContainer()->getCdn();
         switch ($type) {
