@@ -6,6 +6,7 @@ namespace PromoCat\Rackspace\ObjectStore\v1\Models;
 
 use OpenStack\Common\Transport\Utils;
 use PromoCat\Rackspace\Constants\UrlType;
+use Psr\Http\Message\UriInterface;
 
 class StorageObject extends \OpenStack\ObjectStore\v1\Models\StorageObject implements HasInitializedService
 {
@@ -32,7 +33,7 @@ class StorageObject extends \OpenStack\ObjectStore\v1\Models\StorageObject imple
         return $this->_container;
     }
 
-    public function getCdnUrl(string $type = UrlType::SSL)
+    public function getCdnUrl(string $type = UrlType::SSL): UriInterface
     {
         $cdn = $this->getContainer()->getCdn();
         switch ($type) {
