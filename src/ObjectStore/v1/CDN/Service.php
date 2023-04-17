@@ -8,6 +8,9 @@ use OpenStack\Common\Error\BadResponseError;
 use OpenStack\Common\Service\AbstractService;
 use PromoCat\Rackspace\ObjectStore\v1\CDN\Models\Container;
 
+/**
+ * @var Api $api
+ */
 class Service extends AbstractService
 {
     /**
@@ -39,6 +42,41 @@ class Service extends AbstractService
     {
         try {
             $this->execute($this->api->headContainer(), ['name' => $name]);
+
+            return true;
+        } catch (BadResponseError $e) {
+            if (404 === $e->getResponse()->getStatusCode()) {
+                return false;
+            }
+            throw $e;
+        }
+    }
+
+    public function enableCdn(string $name, int $ttl = null): bool
+    {
+        $data = [
+            'name' => $name,
+            'cdnEnabled' => 'True',
+        ];
+        if ($ttl !== null) {
+            $data['ttl'] = $ttl;
+        }
+        try {
+            $this->execute($this->api->putContainer(), $data);
+
+            return true;
+        } catch (BadResponseError $e) {
+            if (404 === $e->getResponse()->getStatusCode()) {
+                return false;
+            }
+            throw $e;
+        }
+    }
+
+    public function disableCdn(string $name): bool
+    {
+        try {
+            $this->execute($this->api->putContainer(), ['name' => $name, 'cdnEnabled' => 'False']);
 
             return true;
         } catch (BadResponseError $e) {

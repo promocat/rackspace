@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PromoCat\Rackspace\ObjectStore\v1;
 
 use OpenStack\Common\Resource\ResourceInterface;
-use PromoCat\Rackspace\ObjectStore\v1\CDN\Service as CDNService;
+use PromoCat\Rackspace\ObjectStore\v1\CDN\Service as CdnService;
 use PromoCat\Rackspace\ObjectStore\v1\Models\Container;
 use PromoCat\Rackspace\ObjectStore\v1\Models\HasInitializedService;
 
@@ -16,7 +16,7 @@ use PromoCat\Rackspace\ObjectStore\v1\Models\HasInitializedService;
  */
 class Service extends \OpenStack\ObjectStore\v1\Service
 {
-    private CDNService $cdnService;
+    private CdnService $cdnService;
 
     public function model(string $class, $data = null): ResourceInterface
     {
@@ -32,12 +32,12 @@ class Service extends \OpenStack\ObjectStore\v1\Service
         return $model;
     }
 
-    public function getCdnService(): CDNService
+    public function getCdnService(): CdnService
     {
         return $this->cdnService;
     }
 
-    public function setCdnService(CDNService $cdnService): self
+    public function setCdnService(CdnService $cdnService): self
     {
         $this->cdnService = $cdnService;
 

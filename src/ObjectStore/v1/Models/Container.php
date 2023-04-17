@@ -6,7 +6,8 @@ namespace PromoCat\Rackspace\ObjectStore\v1\Models;
 
 use OpenStack\Common\Resource\ResourceInterface;
 use PromoCat\Rackspace\ObjectStore\v1\Api;
-use PromoCat\Rackspace\ObjectStore\v1\CDN\Models\Container as CDNContainer;
+use PromoCat\Rackspace\ObjectStore\v1\CDN\Models\Container as CdnContainer;
+use PromoCat\Rackspace\ObjectStore\v1\CDN\Service as CdnService;
 
 /**
  * @property Api $api
@@ -23,7 +24,7 @@ class Container extends \OpenStack\ObjectStore\v1\Models\Container implements Ha
         'bytes' => 'bytesUsed',
     ];
 
-    private ?CDNContainer $cdn = null;
+    private ?CdnContainer $cdn = null;
 
     public function newInstance(): self
     {
@@ -53,7 +54,20 @@ class Container extends \OpenStack\ObjectStore\v1\Models\Container implements Ha
         return $model;
     }
 
-    public function getCdn(): CDNContainer
+    public function enableCdn(int $ttl = null)
+    {
+        $this->getCdnService()->enableCdn($this->name, $ttl);
+        $this->refreshCdnObject();
+    }
+
+    public function disableCdn()
+    {
+        $this->getCdnService()->disableCdn($this->name);
+        unset($this->cdn);
+    }
+
+
+    public function getCdn(): CdnContainer
     {
         if (!$this->isCdnEnabled()) {
             throw new \Exception('Either this container is not CDN-enabled or the CDN is not available');
@@ -68,18 +82,23 @@ class Container extends \OpenStack\ObjectStore\v1\Models\Container implements Ha
             $this->refreshCdnObject();
         }
 
-        return ($this->cdn instanceof CDNContainer) && $this->cdn->isCdnEnabled();
+        return ($this->cdn instanceof CdnContainer) && $this->cdn->isCdnEnabled();
     }
 
     protected function refreshCdnObject()
     {
         try {
-            if (($cdnService = $this->getService()->getCDNService()) !== null) {
+            if (($cdnService = $this->getService()->getCdnService()) !== null) {
                 $this->cdn = $cdnService->getContainer($this->name);
             } else {
                 $this->cdn = null;
             }
         } catch (\Exception $e) {
         }
+    }
+
+    private function getCdnService(): CdnService
+    {
+        return $this->getService()->getCdnService();
     }
 }

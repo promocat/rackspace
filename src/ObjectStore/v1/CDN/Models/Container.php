@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PromoCat\Rackspace\ObjectStore\v1\CDN\Models;
 
 use GuzzleHttp\Psr7\Utils;
