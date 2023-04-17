@@ -76,7 +76,7 @@ class Container extends OperatorResource implements Listable, Retrievable
         $this->cdnSslUrl = $response->getHeaderLine('X-Cdn-Ssl-Uri');
         $this->cdnUrl = $response->getHeaderLine('X-Cdn-Uri');
         $this->cdnEnabled = $response->getHeaderLine('X-Cdn-Enabled') === 'True';
-        $this->ttl = $response->getHeaderLine('X-Ttl');
-        $this->logRetention = $response->getHeaderLine('X-Log-Retention');
+        $this->ttl = (int)$response->getHeaderLine('X-Ttl');
+        $this->logRetention = $response->getHeaderLine('X-Log-Retention') === 'True';
     }
 }
