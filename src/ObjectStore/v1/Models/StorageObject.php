@@ -33,6 +33,16 @@ class StorageObject extends \OpenStack\ObjectStore\v1\Models\StorageObject imple
         return $this->_container;
     }
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getContentType(): string
+    {
+        return $this->contentType;
+    }
+
     public function getCdnUri(string $type = UrlType::SSL): UriInterface
     {
         $cdn = $this->getContainer()->getCdn();
