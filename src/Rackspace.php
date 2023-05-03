@@ -12,7 +12,7 @@ use OpenStack\Common\Transport\HandlerStack;
 use OpenStack\Common\Transport\Utils;
 use OpenStack\OpenStack;
 use PromoCat\Rackspace\Identity\Service as IdentityService;
-use PromoCat\Rackspace\ObjectStore\v1\CDN\Service as CDNService;
+use PromoCat\Rackspace\ObjectStore\v1\CDN\Service as CdnService;
 use PromoCat\Rackspace\ObjectStore\v1\Service;
 
 class Rackspace extends OpenStack
@@ -72,18 +72,15 @@ class Rackspace extends OpenStack
      */
     public function objectStoreV1(array $options = [], array $cdnOptions = []): Service
     {
-        /** @var CDNService $cdnService */
-        $cdnService = $this->builder->createService('ObjectStore\\v1\\CDN', array_merge([
-            'catalogName' => 'cloudFilesCDN',
-            'catalogType' => 'rax:object-cdn',
-        ], $cdnOptions));
-
         /** @var Service $objectStoreService */
         $objectStoreService = $this->builder->createService('ObjectStore\\v1', array_merge([
             'catalogName' => 'cloudFiles',
             'catalogType' => 'object-store',
         ], $options));
 
-        return $objectStoreService->setCdnService($cdnService);
+        $objectStoreService->setServiceBuilder($this->builder);
+        $objectStoreService->setCdnOptions($cdnOptions);
+
+        return $objectStoreService;
     }
 }
